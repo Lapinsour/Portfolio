@@ -1,4 +1,4 @@
---Nettoyage de données en SQL queries
+--Nettoyage de donnÃ©es en SQL queries
 
 Select * 
 From Nashville_DB.dbo.Sheet1$
@@ -17,14 +17,14 @@ From Nashville_DB.dbo.Sheet1$
 
 --2.Remplacer les NULL de la colonne PropertyAdress
 
---Pour cela, on ajoute l'adresse d'un ParcelID à toutes les lignes qui ont le même ParcelID, mais une adresse NULL. 
+--Pour cela, on ajoute l'adresse d'un ParcelID Ã  toutes les lignes qui ont le mÃªme ParcelID, mais une adresse NULL. 
 Select PropertyAddress
 From Nashville_DB.dbo.Sheet1$
 Where PropertyAddress is null
 
 
---Méthode : JOIN la table sur elle-même (A,B) en remplaçant les NULL de la table A par les adresses de la table B selon le ParcelID.
---Note : sur SQL Server, ISNULL prend 2 arguments et affiche la valeur du 2ème argument si le 1er est NULL.
+--MÃ©thode : JOIN la table sur elle-mÃªme (A,B) en remplaÃ§ant les NULL de la table A par les adresses de la table B selon le ParcelID.
+--Note : sur SQL Server, ISNULL prend 2 arguments et affiche la valeur du 2Ã¨me argument si le 1er est NULL.
 Update a
 Set PropertyAddress = ISNULL(a.PropertyAddress, b.PropertyAddress) 
 From Nashville_DB.dbo.Sheet1$ a
@@ -34,10 +34,10 @@ Join Nashville_DB.dbo.Sheet1$ b
 
 
 
---3.Séparer l'adresse en plusieurs colonnes : Adresse, Ville, Etat
+--3.SÃ©parer l'adresse en plusieurs colonnes : Adresse, Ville, Etat
 
---Méthode 1 : le 1er Substring sélectionne la colonne PropertyAddress à partir du 1er caractère, jusqu'à l'index de ','-1, soit le caractère précédent la virgule.
---Le 2è Substring sélectionne PropertyAddress du caractère suivant la virgule jusqu'à l'index du caractère égal à la longueur de la chaîne, soit le dernier.
+--MÃ©thode 1 : le 1er Substring sÃ©lectionne la colonne PropertyAddress Ã  partir du 1er caractÃ¨re, jusqu'Ã  l'index de ','-1, soit le caractÃ¨re prÃ©cÃ©dent la virgule.
+--Le 2Ã¨ Substring sÃ©lectionne PropertyAddress du caractÃ¨re suivant la virgule jusqu'Ã  l'index du caractÃ¨re Ã©gal Ã  la longueur de la chaÃ®ne, soit le dernier.
 
 Alter Table Nashville_DB.dbo.Sheet1$ 
 Add Adresse Nvarchar(255)
@@ -51,7 +51,7 @@ Update Nashville_DB.dbo.Sheet1$
 Set Ville = Substring(PropertyAddress, CHARINDEX(',', PropertyAddress)+1, LEN(PropertyAddress))
 
 
---Méthode 2 : utiliser Parsename, qui scinde une chaîne de caractères selon les points, en replaçant les virgules par des points.
+--MÃ©thode 2 : utiliser Parsename, qui scinde une chaÃ®ne de caractÃ¨res selon les points, en replaÃ§ant les virgules par des points.
 
 Alter Table Nashville_DB.dbo.Sheet1$ 
 Add 
@@ -69,7 +69,7 @@ Select * from Nashville_DB.dbo.Sheet1$
 
 --4.Standardiser les valeurs de la colonne "SoldAsVacant"
 
---On remarque que le "No" et "Yes" sont parfois écrits respectivement "N" et "Y". 
+--On remarque que le "No" et "Yes" sont parfois Ã©crits respectivement "N" et "Y". 
 
 Select Distinct(SoldAsVacant), Count(SoldAsVacant)
 From Nashville_DB.dbo.Sheet1$ 
